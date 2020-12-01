@@ -6,6 +6,7 @@
 #include <iostream>
 #include <math.h>
 #include<fstream>
+#include "string.h"
 #include <sstream>
 using namespace std;
 // functions of the program
@@ -16,6 +17,7 @@ void sort(int arr[], int n);
 void visualprint(int arr[], int n);
 int main()
 {
+    bool running = true;
     char* input = new char();
     int array[100];
     for (int i = 0; i < 100; i++)
@@ -72,40 +74,57 @@ int main()
     }
     else {
         cout << "Oops! You didn't enter a proper command :(";
+        running = false;
     }
     // establishes heap and prints
-    createHeap(array, 100);
-    sort(array, 100);
-    cout << endl;
-    visualprint(array, 100);
+    if (running) {
+        createHeap(array, 100);
+        sort(array, 100);
+        cout << endl;
+        visualprint(array, 100);
+    }
 
+}
+void pr(float times) {
+    int time = floor(times);
+    for (int j = 0; j < time; j++) {
+        cout << " ";
+    }
 }
 // outputs heap based on the sorted integer array
 void visualprint(int arr[], int n) {
-    int count = 0;
-    int level = 0;
-    int tabs = 2;
-    string output;
-    // loops through 6 times because 2^6 is just above 100
-    for (int i = 0; i < 6; i++) {
-        while (level < pow(2, i)) {
-            if (count < n) {
-                cout << arr[count] << "  ";
-                output = "";
-                count++;
-                level++;
-            }
+    //get number of rows total
+    int totalrows = 0;
+    for (int k = 0; k < 100; k++) {
+        if (arr[k] != 0) {
+            totalrows = (int)floor(log2(k + 1)) + 1;
         }
-        cout << endl;
-        level = 0;
-        while (level < pow(2, i) && i < 5) {
-            // prints out braces
-        cout << "/ \\ ";
-        level++;
-        }
-        level = 0;
-        cout << endl;
     }
+    /*if (totalrows > 5) {
+        cout << "I can only print things with at most 5 rows, sorry";
+    }*/
+    if (totalrows == 0) {
+        cout << "The heap is empty!";
+    }
+    else for (int i = 0; i < 100; i++) {
+        int rownum = (int)floor(log2(i + 1));
+        int width = ceil(exp2(totalrows + 2 - rownum));
+        if (i == 0 || i == 1 || i == 3 || i == 7 || i == 15 || i == 31 || i == 63) {
+            width = (int)ceil(width / 2);
+        };
+        width = width - (int)floor(log10(arr[i] + 1));
+        cout << string(width - 1, ' ');
+        if (arr[i] != 0) {
+            cout << arr[i] << " ";
+        }
+        if (arr[i] == 0) {
+            cout << "  ";
+        }
+        if (i == 0 || i == 2 || i == 6 || i == 14 || i == 30 || i == 62) {
+            cout << endl << endl;
+        }
+    }
+    cout << endl;
 }
 // sorts the integer array from greatest to least, idea on how to sort from Omar Nassar
 void sort(int arr[], int n) {
